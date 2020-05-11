@@ -1,0 +1,40 @@
+version: "3"
+services:
+  reverseproxy:
+    image: yibrahim/reverseproxy
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - backend-user
+      - backend-feed
+  backend-user:
+    image: yibrahim/udacity-restapi-user
+    environment:
+      POSTGRESS_USERNAME: process.env.AWS_USERNAME
+      POSTGRESS_PASSWORD: process.env.AWS_USERNAME
+      POSTGRESS_DB: process.env.AWS_DATABASE
+      POSTGRESS_HOST: process.env.AWS_HOST
+      AWS_REGION: process.env.AWS_REGION
+      AWS_PROFILE: process.env.AWS_PROFILE
+      AWS_BUCKET: process.env.AWS_BUCKET
+      JWT_SECRET: process.env.AWS_JWT
+      URL: "http://localhost:8100"
+  backend-feed:
+    image: yibrahim/udacity-restapi-feed
+    volumes:
+      - $HOME/.aws:/root/.aws
+    environment:
+      POSTGRESS_USERNAME: process.env.AWS_USERNAME
+      POSTGRESS_PASSWORD: process.env.AWS_USERNAME
+      POSTGRESS_DB: process.env.AWS_DATABASE
+      POSTGRESS_HOST: process.env.AWS_HOST
+      AWS_REGION: process.env.AWS_REGION
+      AWS_PROFILE: process.env.AWS_PROFILE
+      AWS_BUCKET: process.env.AWS_BUCKET
+      JWT_SECRET: process.env.AWS_JWT
+      URL: "http://localhost:8100"
+  frontend:
+    image: yibrahim/udacity-frontend
+    ports:
+      - "8100:80"
