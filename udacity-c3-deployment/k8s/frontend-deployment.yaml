@@ -1,11 +1,15 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     service: frontend
   name: frontend
 spec:
-  replicas: 2
+  replicas: 1
+  selector:
+    matchLabels:
+      service: frontend
+      api: external
   template:
     metadata:
       labels:
@@ -13,7 +17,7 @@ spec:
         api: external
     spec:
       containers:
-        - image: yibrahim/udacity-frontend:local
+        - image: yibrahim/udacity-frontend
           name: frontend
           imagePullPolicy: Always
           ports:
